@@ -1,0 +1,189 @@
+#############################################################################################################################################
+# Instruction for Operate with Hubble/Cilium                                                                                                 #
+#############################################################################################################################################
+# Pre-requiste before start lab                                                                                                             #
+# 1. Kubernetes farm without network "Pod network add-on" or remove this existing owner (Status will be not ready)                          #
+#                                                                                                                                           #
+# 2. Install cilium client (binary) for verify cilium status as detail below:                                                               #
+#    "curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}"       #
+#    "sha256sum --check cilium-linux-amd64.tar.gz.sha256sum"                                                                                #
+#    "sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin"                                                                              #
+#    "rm cilium-linux-amd64.tar.gz{,.sha256sum}"                                                                                            #
+#                                                                                                                                           #
+# 3. Install hubble cli (binary) for track in command line with command below:                                                              #
+#    "export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)"                                   #
+#    "curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum}"  #
+#    "sha256sum --check hubble-linux-amd64.tar.gz.sha256sum"                                                                                #
+#    "sudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin"                                                                              #
+#    "rm hubble-linux-amd64.tar.gz{,.sha256sum}                                                                                             #
+#                                                                                                                                           #
+# 4. Install helm for package management with command below:                                                                                #
+#    "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"                                      #
+#    "chmod 700 get_helm.sh"                                                                                                                #
+#   ./get_helm.sh                                                                                                                           #    
+#############################################################################################################################################
+# Example of Kubernetes Farm in Lab:                                                                                                        #
+# :~$kubectl get node                                                                                                                       #
+# NAME                                             STATUS     ROLES                  AGE   VERSION                                          #
+# ip-10-21-1-115.ap-southeast-1.compute.internal   NotReady   worker                 27d   v1.22.1                                          #
+# ip-10-21-1-160.ap-southeast-1.compute.internal   NotReady   control-plane,master   27d   v1.22.1                                          #
+# ip-10-21-1-195.ap-southeast-1.compute.internal   NotReady   control-plane,master   27d   v1.22.1                                          #
+# ip-10-21-1-233.ap-southeast-1.compute.internal   NotReady   control-plane,master   27d   v1.22.1                                          #
+# ip-10-21-1-44.ap-southeast-1.compute.internal    NotReady   worker                 27d   v1.22.1                                          #
+# ip-10-21-1-53.ap-southeast-1.compute.internal    NotReady   worker                 27d   v1.22.1                                          #
+#############################################################################################################################################
+
+------------------------------------------------------------------------------------------
+Part 1: Install cilium network add-on with hubble metric
+------------------------------------------------------------------------------------------
+1. (MasterNode) Install cilium network add-on by command:
+  cilium install
+   *Case roll-back: cilium uninstall
+   
+  ********************************************************************************************
+  Optional: Cilium also can install via Helm if you need to enable some metric more command:
+  helm repo add cilium https://helm.cilium.io/ &&  helm repo update
+  helm install cilium cilium/cilium --version 1.11.1 \
+  --namespace kube-system \
+  --set prometheus.enabled=true \
+  --set operator.prometheus.enabled=true \
+  --set hubble.metrics.enabled="{dns,drop,tcp,flow,icmp,http}" 
+  
+  *Case roll-back
+  helm delete cilium -n=kube-system
+  *********************************************************************************************
+
+2. (MasterNode) Check status of cilium network add-on and kubernetes status by command:
+  cilium status
+  kubectl get nodes
+
+3. (MasterNode) Enable hubble observibility by command:
+  cilium hubble enable --ui 
+  *Case roll-back: cilium hubble disable --ui
+
+  ********************************************************************************************
+  Optional: Cilium also can install via Helm if you need to enable some metric more command:
+  helm upgrade cilium cilium/cilium --version 1.11.1 \
+   --namespace kube-system \
+   --reuse-values \
+   --set hubble.relay.enabled=true \
+   --set hubble.ui.enabled=true
+
+   *Case roll-back
+  helm delete cilium -n=kube-system
+  ********************************************************************************************
+
+4. (MasterNode) Check status of hubble by command:
+  cilium status
+  cilium hubble port-forward&
+  hubble status
+  hubble observe
+
+5. (MasterNode) Test open hubble ui by command:
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+
+
+------------------------------------------------------------------------------------------
+Part 2: Deploy application with single namespace
+------------------------------------------------------------------------------------------
+1. (MasterNode) Deploy database pods by command:(Step-by-Step Wait until previous complete before next step)
+  kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/databasemodule_pod.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/databasemodule_svc.yml
+  kubectl get pods
+	kubectl get svc
+
+2. (MasterNode) Deploy pods and service for webservicemodule (web) by command (Step-by-Step Wait until previous complete before next step):
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_pod.yml
+  kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_pod2.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_svc.yml
+  kubectl get pods
+	kubectl get svc
+
+3. (MasterNode) Basic inspect connection from web --> database
+  hubble observe --pod maindb --verdict FORWARDED
+
+4. (MasterNode) Test access web application by url:
+  curl http://<private ip of masternode:32500>
+  *Open browser: http://<public ip of masternode:32500>
+
+  hubble observe --pod web --verdict FORWARDED
+
+5. (MasterNode) Test open hubble for inspection and test application:
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+  
+6. (MasterNode) Cleanup application by command:
+   kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_pod.yml
+   kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_pod2.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/webmodule_svc.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/databasemodule_pod.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_1.2_Pods_Service_Deployment/multicontainer/databasemodule_svc.yml
+
+
+------------------------------------------------------------------------------------------
+Part 3: Deploy application with multiple namespace
+------------------------------------------------------------------------------------------
+1. (MasterNode) Deploy application by command:
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/management-ui-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/backend-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/frontend-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/client-set.yml
+
+2. (MasterNode) Verify application readiness by command: 
+	kubectl get namespace
+	kubectl get all -n=management-ui 
+	kubectl get all -n=stars
+	kubectl get all -n=client
+
+3. (MasterNode) Test open browser for check application:
+  *Open browser: http://<any public ip>:32500
+
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+
+4. (MasterNode) Apply network policy for denied any connection to namespace: "stars" and "client"
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-deny-client.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-deny-stars.yml
+
+5. (MasterNode) Test open browser again:
+  *Open browser: http://<any public ip>:32500
+
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+
+6. (MasterNode) Apply network policy for allow all pods from namespace "management-ui" (label: role=management-ui) access to any pods in namespace "stars"
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-allow-ui.yml
+
+7. (MasterNode) Apply network policy for allow all pods from namespace "management-ui" (label: role=management-ui) access to any pods in namespace "client"
+	kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-allow-ui-client.yml
+
+8. (MasterNode) Test open browser again:
+  *Open browser: http://<any public ip>:32500
+
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+
+9. (MasterNode) Apply network policy for allow pods frontend (label: role=frontend) to pods backend (label: role=backend) in same namespace
+  kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-allow-backend.yml
+
+10. (MasterNode) Apply network policy for allow all pods from namespace "client" (label: role=client) access to pods frontend (label: role=frontend)
+  kubectl create -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/policy-allow-frontend.yml
+
+11. (MasterNode) Test open browser again:
+  *Open browser: http://<any public ip>:32500
+
+  cilium hubble ui
+  *Open browser: http://<public ip of masternode:12000>
+  *Ctrl+C for cancel
+
+12. (MasterNode) CleanUp Lab by command:
+	kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/management-ui-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/backend-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/frontend-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/kubernetes_202203/master/WorkShop_2.4_Security/client-set.yml
