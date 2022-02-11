@@ -11,14 +11,14 @@
 #    "rm cilium-linux-amd64.tar.gz{,.sha256sum}"                                                                                            #
 #                                                                                                                                           #
 # 3. Install hubble cli (binary) for track in command line with command below:                                                              #
-#    "export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)"                                   #
+#    "export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/main/stable.txt)"                                   #
 #    "curl -L --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum}"  #
 #    "sha256sum --check hubble-linux-amd64.tar.gz.sha256sum"                                                                                #
 #    "sudo tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin"                                                                              #
 #    "rm hubble-linux-amd64.tar.gz{,.sha256sum}                                                                                             #
 #                                                                                                                                           #
 # 4. Install helm for package management with command below:                                                                                #
-#    "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"                                      #
+#    "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"                                      #
 #    "chmod 700 get_helm.sh"                                                                                                                #
 #   ./get_helm.sh                                                                                                                           #    
 #############################################################################################################################################
@@ -89,15 +89,15 @@ Part 1: Install cilium network add-on with hubble metric
 Part 2: Deploy application with single namespace
 ------------------------------------------------------------------------------------------
 1. (MasterNode) Deploy database pods by command:(Step-by-Step Wait until previous complete before next step)
-  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/databasemodule_pod.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/databasemodule_svc.yml
+  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/databasemodule_pod.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/databasemodule_svc.yml
   kubectl get pods
 	kubectl get svc
 
 2. (MasterNode) Deploy pods and service for webservicemodule (web) by command (Step-by-Step Wait until previous complete before next step):
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_pod.yml
-  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_pod2.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_svc.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_pod.yml
+  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_pod2.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_svc.yml
   kubectl get pods
 	kubectl get svc
 
@@ -116,21 +116,21 @@ Part 2: Deploy application with single namespace
   *Ctrl+C for cancel
   
 6. (MasterNode) Cleanup application by command:
-   kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_pod.yml
-   kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_pod2.yml
-	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/webmodule_svc.yml
-	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/databasemodule_pod.yml
-	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/singlenamespace/databasemodule_svc.yml
+   kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_pod.yml
+   kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_pod2.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/webmodule_svc.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/databasemodule_pod.yml
+	 kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/singlenamespace/databasemodule_svc.yml
 
 
 ------------------------------------------------------------------------------------------
 Part 3: Deploy application with multiple namespace
 ------------------------------------------------------------------------------------------
 1. (MasterNode) Deploy application by command:
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/management-ui-set.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/backend-set.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/frontend-set.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/client-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/management-ui-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/backend-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/frontend-set.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/client-set.yml
 
 2. (MasterNode) Verify application readiness by command: 
 	kubectl get namespace
@@ -146,8 +146,8 @@ Part 3: Deploy application with multiple namespace
   *Ctrl+C for cancel
 
 4. (MasterNode) Apply network policy for denied any connection to namespace: "stars" and "client"
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-deny-client.yml
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-deny-stars.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-deny-client.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-deny-stars.yml
 
 5. (MasterNode) Test open browser again:
   *Open browser: http://<any public ip>:32500
@@ -157,10 +157,10 @@ Part 3: Deploy application with multiple namespace
   *Ctrl+C for cancel
 
 6. (MasterNode) Apply network policy for allow all pods from namespace "management-ui" (label: role=management-ui) access to any pods in namespace "stars"
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-allow-ui.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-allow-ui.yml
 
 7. (MasterNode) Apply network policy for allow all pods from namespace "management-ui" (label: role=management-ui) access to any pods in namespace "client"
-	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-allow-ui-client.yml
+	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-allow-ui-client.yml
 
 8. (MasterNode) Test open browser again:
   *Open browser: http://<any public ip>:32500
@@ -170,10 +170,10 @@ Part 3: Deploy application with multiple namespace
   *Ctrl+C for cancel
 
 9. (MasterNode) Apply network policy for allow pods frontend (label: role=frontend) to pods backend (label: role=backend) in same namespace
-  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-allow-backend.yml
+  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-allow-backend.yml
 
 10. (MasterNode) Apply network policy for allow all pods from namespace "client" (label: role=client) access to pods frontend (label: role=frontend)
-  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/policy-allow-frontend.yml
+  kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/policy-allow-frontend.yml
 
 11. (MasterNode) Test open browser again:
   *Open browser: http://<any public ip>:32500
@@ -183,7 +183,7 @@ Part 3: Deploy application with multiple namespace
   *Ctrl+C for cancel
 
 12. (MasterNode) CleanUp Lab by command:
-	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/management-ui-set.yml
-	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespacebackend-set.yml
-	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/frontend-set.yml
-	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/master/multiplenamespace/client-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/management-ui-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespacebackend-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/frontend-set.yml
+	kubectl delete -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/client-set.yml
