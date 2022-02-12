@@ -34,7 +34,7 @@
 #############################################################################################################################################
 
 ------------------------------------------------------------------------------------------
-Part 1: Install cilium network add-on with hubble metric
+Part 1: Install Cilium & Hubble
 ------------------------------------------------------------------------------------------
 1. (MasterNode) Install cilium network add-on by command:
   cilium install
@@ -124,7 +124,7 @@ Part 2: Deploy application with single namespace
 
 
 ------------------------------------------------------------------------------------------
-Part 3: Deploy application with multiple namespace
+Part 3: Deploy application with multiple namespace and apply security policy
 ------------------------------------------------------------------------------------------
 1. (MasterNode) Deploy application by command:
 	kubectl create -f https://raw.githubusercontent.com/praparn/dev-mountain-fest-ebpf-032022/main/multiplenamespace/management-ui-set.yml
