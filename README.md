@@ -1,4 +1,4 @@
-#########################################################
+#########################################################                  
  Instruction for Operate with Hubble/Cilium                                                                                                 
 #########################################################
 
@@ -22,7 +22,7 @@
     "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"                                      
     "chmod 700 get_helm.sh"                                                                                                                
    ./get_helm.sh                                                                                                                               
-##################################################################################################
+###########################################################                  
  Example of Kubernetes Farm in Lab:                                                                
  :~$kubectl get node                                                                                                                       
  NAME                                             STATUS     ROLES                  AGE   VERSION                                          
@@ -32,4 +32,4 @@
  ip-10-21-1-233.ap-southeast-1.compute.internal   NotReady   control-plane,master   27d   v1.22.1                                          
  ip-10-21-1-44.ap-southeast-1.compute.internal    NotReady   worker                 27d   v1.22.1                                          
  ip-10-21-1-53.ap-southeast-1.compute.internal    NotReady   worker                 27d   v1.22.1                                          
-##################################################################################################
+###########################################################                  
