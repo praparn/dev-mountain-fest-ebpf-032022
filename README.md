@@ -1,9 +1,11 @@
+[##### Slide for Presentation #####](https://speakerdeck.com/praparn/secure-and-monitor-your-service-connectivity-without-service-mesh-68ef2ad7-9a0e-4f50-a0ff-0967fb64a460)
+
 #########################################################         
 Demo Video                  
 #########################################################            
-Part 1: Setup Cilium & Hubble (https://youtu.be/84PQ8bJV_tc)                  
-Part 2: Deploy application with single namespace (https://youtu.be/FrUiqx7H3F4)                  
-Part 3: Deploy application with multiple namespace and apply security policy (https://youtu.be/ftA41oD6JXM)                  
+[Part 1: Setup Cilium & Hubble](https://youtu.be/84PQ8bJV_tc)                
+[Part 2: Deploy application with single namespace](https://youtu.be/FrUiqx7H3F4)                  
+[Part 3: Deploy application with multiple namespace and apply security policy](https://youtu.be/ftA41oD6JXM)                  
 
 #########################################################                  
  Instruction for Operate with Hubble/Cilium                                                                                                 
