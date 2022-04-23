@@ -2,7 +2,8 @@
 
 #########################################################         
 Demo Video                  
-#########################################################            
+#########################################################
+[Presentation Slide](https://www.youtube.com/watch?v=jYtJVHCsKpw&t=9s)
 [Part 1: Setup Cilium & Hubble](https://youtu.be/84PQ8bJV_tc)                
 [Part 2: Deploy application with single namespace](https://youtu.be/FrUiqx7H3F4)                  
 [Part 3: Deploy application with multiple namespace and apply security policy](https://youtu.be/ftA41oD6JXM)                  
